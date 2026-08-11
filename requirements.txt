@@ -12,3 +12,4 @@ apscheduler
 pillow
 pytesseract
 alembic
+pdf2image

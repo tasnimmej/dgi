@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Routes, Route, Link } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import UploadInvoice from './pages/UploadInvoice'
 import { getToken, removeToken } from './utils/auth'
 
 function App() {
@@ -82,20 +83,22 @@ function App() {
           <h1 className="text-3xl font-bold text-blue-900">📊 Assistant Déclaration DGI</h1>
           <nav className="flex gap-3">
             <Link to="/">Dashboard</Link>
-            {getToken() ? (
-              <button onClick={handleLogout} className="text-sm bg-red-100 px-3 py-1 rounded">Se déconnecter</button>
-            ) : (
-              <>
-                <Link to="/login" className="text-sm bg-blue-100 px-3 py-1 rounded">Connexion</Link>
-                <Link to="/register" className="text-sm bg-gray-100 px-3 py-1 rounded">Inscription</Link>
-              </>
-            )}
+        <Link to="/upload-invoice" className="text-sm bg-blue-50 px-3 py-1 rounded">Téléverser facture</Link>
+        {getToken() ? (
+          <button onClick={handleLogout} className="text-sm bg-red-100 px-3 py-1 rounded">Se déconnecter</button>
+        ) : (
+          <>
+            <Link to="/login" className="text-sm bg-blue-100 px-3 py-1 rounded">Connexion</Link>
+            <Link to="/register" className="text-sm bg-gray-100 px-3 py-1 rounded">Inscription</Link>
+          </>
+        )}
           </nav>
         </header>
 
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/upload-invoice" element={<UploadInvoice />} />
 
           <Route path="/" element={(
             <>

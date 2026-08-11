@@ -65,3 +65,41 @@ async def upload_invoice(file: UploadFile = File(...), db: Session = Depends(get
     db.refresh(invoice)
 
     return {"message": "Facture OCR enregistrée", "invoice_id": invoice.id, "ocr": data}
+
+
+@router.post('/manual-create')
+def manual_create_invoice(payload: dict, db: Session = Depends(get_db), current_user: models.UserModel = Depends(get_current_user)):
+    """Créer une facture manuellement depuis la page frontend (après édition OCR).
+    payload attendu: { date: 'YYYY-MM-DD' | None, ice_fournisseur, montant_ht, taux_tva, type_transaction }
+    """
+    try:
+        date_val = payload.get('date')
+        if date_val:
+            from datetime import datetime
+            date_obj = datetime.strptime(date_val, '%Y-%m-%d').date()
+        else:
+            date_obj = None
+
+        montant_ht = float(payload.get('montant_ht') or 0.0)
+        taux_tva = float(payload.get('taux_tva') or 0.0)
+        type_transaction = payload.get('type_transaction', 'VENTE').upper()
+
+        montant_tva = round(montant_ht * taux_tva, 2)
+        montant_ttc = round(montant_ht + montant_tva, 2)
+
+        invoice = models.InvoiceModel(
+            date=date_obj,
+            ice_fournisseur=payload.get('ice_fournisseur') or '',
+            montant_ht=montant_ht,
+            taux_tva=taux_tva,
+            type_transaction=type_transaction,
+            company_id=current_user.company_id,
+            montant_tva=montant_tva,
+            montant_ttc=montant_ttc
+        )
+        db.add(invoice)
+        db.commit()
+        db.refresh(invoice)
+        return { 'message': 'Facture créée', 'invoice_id': invoice.id }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

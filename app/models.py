@@ -12,10 +12,13 @@ class InvoiceModel(Base):
     montant_ht = Column(Float, nullable=False)
     taux_tva = Column(Float, nullable=False)     # Ex: 0.20
     type_transaction = Column(String)           # "VENTE" ou "ACHAT"
+    company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
     
     # Propriété calculée (stockée pour l'audit)
     montant_tva = Column(Float, nullable=False)
     montant_ttc = Column(Float, nullable=False)
+
+    company = relationship("CompanyModel")
 
 class DeclarationModel(Base):
     __tablename__ = "declarations"

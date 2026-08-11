@@ -26,9 +26,10 @@ def generer_declaration_pdf(declaration_data: dict, output_path: str):
     c.setFont("Helvetica-Bold", 11)
     c.drawString(20*mm, height - 40*mm, "IDENTIFICATION DE L'ENTREPRISE")
     c.setFont("Helvetica", 10)
-    c.drawString(20*mm, height - 45*mm, f"ICE : {declaration_data['company_ice']}")
+    c.drawString(20*mm, height - 45*mm, f"ICE : {declaration_data.get('company_ice','')}")
     c.drawString(20*mm, height - 50*mm, f"Période concernée : {declaration_data['mois']:02d}/{declaration_data['annee']}")
     c.drawString(20*mm, height - 55*mm, f"Date de création : {declaration_data['date_creation']}")
+    c.drawString(20*mm, height - 60*mm, "République Tunisienne - Ministère des Finances - Direction Générale des Impôts")
     
     # --- Tableau des montants ---
     # Titres du tableau
@@ -78,7 +79,7 @@ def generer_declaration_pdf(declaration_data: dict, output_path: str):
     c.setFillColor(HexColor('#D32F2F')) # Rouge foncé pour le résultat
     c.rect(100*mm, y_position - 5*mm, 150*mm, 15*mm, fill=1, stroke=0) # Rectangle rouge clair
     c.setFillColor(white)
-    c.drawString(105*mm, y_position + 3*mm, f"TVA NETTE À PAYER : {declaration_data['tva_nette_a_payer']:.2f} MAD")
+    c.drawString(105*mm, y_position + 3*mm, f"TVA NETTE À PAYER : {declaration_data['tva_nette_a_payer']:.2f} TND")
     c.setFillColor(black)
     
     # --- Pied de page (Signature et mentions légales) ---

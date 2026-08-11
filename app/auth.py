@@ -104,10 +104,22 @@ def login(form_data: UserLogin, db: Session = Depends(get_db)):
 
 # Dépendance pour récupérer l'utilisateur courant
 from fastapi import Header
+from typing import Optional
 
-def get_current_user(token: str = Header(None), db: Session = Depends(get_db)):
-    if token is None:
+def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    """
+    Lit l'en-tête Authorization: "Bearer <token>" et retourne l'utilisateur.
+    """
+    if authorization is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token manquant")
+
+    # authorization attendu: "Bearer <token>"
+    parts = authorization.split()
+    if len(parts) != 2 or parts[0].lower() != "bearer":
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="En-tête Authorization invalide")
+
+    token = parts[1]
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

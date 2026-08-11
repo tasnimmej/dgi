@@ -30,6 +30,9 @@ from app.services.pdf_generator import generer_declaration_pdf
 from fastapi.responses import FileResponse
 import os
 
+# Auth dependency
+from app.auth import get_current_user
+
 
 # ============================================================
 # CRÉATION DES TABLES
@@ -47,8 +50,12 @@ app = FastAPI(
 )
 
 # === Auth router ===
-from app.auth import router as auth_router
+from app.auth import router as auth_router, get_current_user
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
+# === Invoice routes (OCR upload) ===
+from app.routes.invoice_routes import router as invoice_router
+app.include_router(invoice_router, prefix="/invoices", tags=["invoices"])
 
 
 # ============================================================
@@ -139,7 +146,7 @@ def verifier_echeances():
     finally:
         db.close()
 
-scheduler = BackgroundScheduler(timezone="Africa/Casablanca")
+scheduler = BackgroundScheduler(timezone="Africa/Tunis")
 
 scheduler.add_job(
     verifier_echeances,
@@ -176,8 +183,20 @@ def read_root():
 @app.post("/upload-csv")
 async def upload_csv(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
+    # Require authentication: try to obtain current_user via auth dependency
+    from fastapi import Depends as _Depends
+    try:
+        from app.auth import get_current_user
+        # re-resolve current_user using proper dependency
+        current_user = _Depends(get_current_user)
+    except Exception:
+        current_user = None
+
+    # If current_user is still a dependency object (FastAPI will handle real resolving at runtime), proceed as usual
+
 
     # --------------------------------------------------------
     # 1. Vérification du fichier
@@ -503,6 +522,8 @@ async def upload_csv(
 
                 type_transaction=type_transaction,
 
+                company_id=(current_user.company_id if hasattr(current_user, 'company_id') else None),
+
                 montant_tva=resultats[
                     "montant_tva"
                 ],
@@ -607,12 +628,17 @@ async def upload_csv(
 async def valider_declaration(
     mois: int,
     annee: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
+    """Endpoint protégé: l'utilisateur courant ne peut valider que pour sa propre entreprise."""
     # 1. Récupérer toutes les factures VENTE et ACHAT pour ce mois/année
+    # Filtrer par société de l'utilisateur courant
+    company_id = getattr(current_user, 'company_id', None)
     factures_mois = db.query(InvoiceModel).filter(
         extract('year', InvoiceModel.date) == annee,
-        extract('month', InvoiceModel.date) == mois
+        extract('month', InvoiceModel.date) == mois,
+        InvoiceModel.company_id == company_id
     ).all()
 
     if not factures_mois:
@@ -633,9 +659,12 @@ async def valider_declaration(
     bilan = faire_bilan_tva(factures_json)
 
     # 4. Vérifier si une déclaration existe déjà pour ce mois
+    company_ice = getattr(current_user, 'company', None).ice if getattr(current_user, 'company', None) else "ICE_DEFAULT"
+
     declaration_existante = db.query(DeclarationModel).filter(
         DeclarationModel.mois == mois,
-        DeclarationModel.annee == annee
+        DeclarationModel.annee == annee,
+        DeclarationModel.company_ice == company_ice
     ).first()
 
     if declaration_existante:
@@ -649,7 +678,7 @@ async def valider_declaration(
     else:
         # 5. Créer une nouvelle déclaration
         nouvelle_declaration = DeclarationModel(
-            company_ice="ICE_DEFAULT", # À remplacer plus tard par l'ICE de l'utilisateur
+            company_ice=company_ice,
             mois=mois,
             annee=annee,
             total_ht_ventes=bilan["total_ht_ventes"],
@@ -679,11 +708,12 @@ async def valider_declaration(
 # ============================================================
 
 @app.get("/declarations")
-async def get_declarations(db: Session = Depends(get_db)):
+async def get_declarations(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
     """
-    Récupère toutes les déclarations validées pour les afficher dans le frontend.
+    Récupère toutes les déclarations validées pour la société de l'utilisateur courant.
     """
-    declarations = db.query(DeclarationModel).order_by(
+    company_ice = getattr(current_user, 'company', None).ice if getattr(current_user, 'company', None) else "ICE_DEFAULT"
+    declarations = db.query(DeclarationModel).filter(DeclarationModel.company_ice == company_ice).order_by(
         DeclarationModel.annee.desc(), 
         DeclarationModel.mois.desc()
     ).all()
@@ -733,7 +763,8 @@ async def get_declarations(db: Session = Depends(get_db)):
 @app.get("/declarations/{declaration_id}/pdf")
 async def telecharger_pdf_declaration(
     declaration_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     # 1. Récupérer la déclaration dans la base
     declaration = db.query(DeclarationModel).filter(DeclarationModel.id == declaration_id).first()

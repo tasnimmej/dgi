@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { Routes, Route, Link } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import { getToken, removeToken } from './utils/auth'
 
 function App() {
   // États existants
@@ -16,7 +20,9 @@ function App() {
   const fetchHistory = async () => {
     setLoadingHistory(true)
     try {
-      const response = await axios.get('http://127.0.0.1:8000/declarations')
+      const response = await axios.get('http://127.0.0.1:8000/declarations', {
+        headers: getToken() ? { Authorization: `Bearer ${getToken()}` } : {}
+      })
       setHistory(response.data)
     } catch (err) {
       console.error("Erreur lors du chargement de l'historique", err)
@@ -50,7 +56,7 @@ function App() {
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/upload-csv', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data', ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}) }
       })
       setResult(response.data)
       // Recharger l'historique après un import réussi
@@ -63,15 +69,37 @@ function App() {
     }
   }
 
+  const handleLogout = () => {
+    removeToken()
+    window.location.href = '/login'
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
         
-        <h1 className="text-3xl font-bold text-blue-900 mb-6 text-center">
-          📊 Assistant Déclaration DGI
-        </h1>
+        <header className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-blue-900">📊 Assistant Déclaration DGI</h1>
+          <nav className="flex gap-3">
+            <Link to="/">Dashboard</Link>
+            {getToken() ? (
+              <button onClick={handleLogout} className="text-sm bg-red-100 px-3 py-1 rounded">Se déconnecter</button>
+            ) : (
+              <>
+                <Link to="/login" className="text-sm bg-blue-100 px-3 py-1 rounded">Connexion</Link>
+                <Link to="/register" className="text-sm bg-gray-100 px-3 py-1 rounded">Inscription</Link>
+              </>
+            )}
+          </nav>
+        </header>
 
-        {/* --- PARTIE IMPORT --- */}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="/" element={(
+            <>
+              {/* --- PARTIE IMPORT --- */}
         <div className="bg-white shadow-xl rounded-2xl p-8 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Importer un mois</h2>
           <div className="border-2 border-dashed border-blue-300 rounded-xl p-6 bg-blue-50 flex flex-col items-center justify-center mb-4">
@@ -178,6 +206,9 @@ function App() {
             </div>
           )}
         </div>
+            </>
+          )} />
+        </Routes>
 
       </div>
     </div>

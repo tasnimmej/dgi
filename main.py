@@ -46,6 +46,10 @@ app = FastAPI(
     title="Système de Déclaration DGI - API"
 )
 
+# === Auth router ===
+from app.auth import router as auth_router
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+
 
 # ============================================================
 # CORS

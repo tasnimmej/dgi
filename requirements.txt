@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic
+python-multipart
+pandas
+reportlab
+passlib[bcrypt]
+python-jose[cryptography]
+apscheduler
+pillow
+pytesseract
+alembic

@@ -1,0 +1,258 @@
+%-------------------------------------------------------------------------------------------------%   TASNIM MEJBRI — CURRICULUM VITAE
+%   Classic / Minimal Style — single page (A4)
+%----------------------------------------------------------------------------------------
+
+
+\documentclass[10pt, a4paper]{article}
+
+
+%----------------------------------------------------------------------------------------
+%   PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper, top=1.3cm, bottom=1.1cm, left=1.9cm, right=1.9cm]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{microtype}
+
+
+%----------------------------------------------------------------------------------------
+%   COLORS & HYPERLINKS
+%----------------------------------------------------------------------------------------
+\definecolor{darkgray}{HTML}{333333}
+\definecolor{medgray}{HTML}{555555}
+\definecolor{accentgray}{HTML}{888888}
+\definecolor{linkcolor}{HTML}{2B4590}
+
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=linkcolor,
+    pdfauthor={Tasnim Mejbri},
+    pdftitle={CV - Tasnim Mejbri}
+}
+
+
+%----------------------------------------------------------------------------------------
+%   FONT
+%----------------------------------------------------------------------------------------
+\color{darkgray}
+\renewcommand{\familydefault}{\sfdefault}
+
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0pt}
+\setlist[itemize]{leftmargin=1.1em, topsep=1pt, itemsep=0pt, parsep=0pt, partopsep=0pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+
+%----------------------------------------------------------------------------------------
+%   SECTION FORMATTING
+%----------------------------------------------------------------------------------------
+\titleformat{\section}
+    {\large\bfseries\color{darkgray}}
+    {}{0em}{}
+    [\vspace{-0.55em}\rule{\linewidth}{0.4pt}\vspace{0.15em}]
+
+
+\titlespacing*{\section}{0pt}{0.5em}{0.4em}
+
+
+%----------------------------------------------------------------------------------------
+%   CUSTOM COMMANDS
+%----------------------------------------------------------------------------------------
+
+
+\newcommand{\cvline}[3]{%
+    \noindent
+    \begin{tabularx}{\linewidth}{@{}Y r@{}}
+        \textbf{#1} #2 & \textcolor{accentgray}{\small #3}
+    \end{tabularx}
+    \par\vspace{1pt}
+}
+
+
+\newcommand{\cventry}[4]{%
+    \noindent
+    \begin{tabularx}{\linewidth}{@{}Y r@{}}
+        \textbf{#1} \textit{\textcolor{medgray}{- #2}} & \textcolor{accentgray}{\small #3}
+    \end{tabularx}
+    {\small
+    \begin{itemize}
+        #4
+    \end{itemize}}
+    \vspace{0.1em}
+}
+
+
+\newcommand{\cvproject}[4]{%
+    \noindent
+    \begin{tabularx}{\linewidth}{@{}Y r@{}}
+        \textbf{#1} \textcolor{accentgray}{\small | #2} & \textcolor{accentgray}{\small #3}
+    \end{tabularx}
+    {\small
+    \begin{itemize}
+        #4
+    \end{itemize}}
+    \vspace{0.1em}
+}
+
+
+\newcommand{\skillrow}[2]{%
+    \noindent\textbf{#1:} \textcolor{medgray}{#2}\par\vspace{1pt}
+}
+
+
+%----------------------------------------------------------------------------------------
+%   DOCUMENT
+%----------------------------------------------------------------------------------------
+\begin{document}
+\pagestyle{empty}
+
+
+%----------------------------------------------------------------------------------------
+%   HEADER
+%----------------------------------------------------------------------------------------
+{\centering
+    {\LARGE\bfseries Tasnim Mejbri}\par
+    \vspace{2pt}
+    {\color{medgray} Computer Science Student - ISIMM, Monastir, Tunisia}\par
+    \vspace{4pt}
+    \small
+    \href{mailto:tasnim.mejbri@isimm.u-monastir.tn}{tasnim.mejbri@isimm.u-monastir.tn}
+    \textcolor{accentgray}{\,\textbullet\,}
+    \href{mailto:tasnimmejbri12@gmail.com}{tasnimmejbri12@gmail.com}
+    \textcolor{accentgray}{\,\textbullet\,}
+    \href{tel:+21623960181}{+216 23 960 181}
+    \textcolor{accentgray}{\,\textbullet\,}
+    \href{https://www.linkedin.com/in/tasnim-mejbri-353ba4395/}{linkedin.com/in/tasnim-mejbri}
+    \textcolor{accentgray}{\,\textbullet\,}
+    \href{https://github.com/tasnimmej}{github.com/tasnimmej}\par
+}
+
+\vspace{0.3em}
+
+
+%----------------------------------------------------------------------------------------
+%   EDUCATION
+%----------------------------------------------------------------------------------------
+\section{Education}
+
+
+\cvline{Institut Sup\'{e}rieur d'Informatique et de Math\'{e}matiques de Monastir (ISIMM)}
+        {\textit{\color{medgray}Bachelor's Degree in Computer Science - coursework: Software Engineering}}
+        {2024 - Present}
+
+\cvline{Lyc\'{e}e Pilote Kairouan}
+        {\textit{\color{medgray}Baccalaur\'{e}at - Mathematics, Mention: Bien}}
+        {2020 - 2024}
+
+
+%----------------------------------------------------------------------------------------
+%   SKILLS
+%----------------------------------------------------------------------------------------
+\section{Technical Skills}
+
+\skillrow{Languages}{Python, Java, C, JavaScript, PHP, SQL, HTML/CSS}
+\skillrow{Backend \& Frameworks}{FastAPI, Flask, React, Node.js, Express, REST APIs}
+\skillrow{Data \& AI}{PostgreSQL, MySQL, Supabase, Pandas, spaCy, Tesseract OCR}
+\skillrow{Reporting \& Automation}{ReportLab, APScheduler, Alembic, Git, GitHub, VS Code}
+\skillrow{Concepts \& OS}{UML, Agile/Scrum, Linux (Ubuntu), Windows}
+
+
+%----------------------------------------------------------------------------------------
+%   PROJECTS
+%----------------------------------------------------------------------------------------
+\section{Projects}
+
+
+\cvproject{DGI Tax Declaration System}{FastAPI, SQLAlchemy, PostgreSQL, React, OCR}{2026}{
+    \item Full-stack app for Tunisian SMEs: imports invoices via CSV and OCR (Tesseract), computes the monthly VAT balance, and generates the official DGI declaration PDF with ReportLab.
+    \item JWT auth, per-company data isolation, APScheduler deadline alerts, unit-tested VAT engine.
+}
+
+
+\cvproject{TeamFlow - Task Manager}{React, Tailwind CSS, Supabase}{2026}{
+    \item Workspaces, boards (To Do / In Progress / Done), member roles and activity feeds, with data isolated per workspace.
+    \item Client-side routing, persistent storage and responsive UI; migrating to Supabase.
+}
+
+
+\cvproject{Localis AI}{Next.js, FastAPI, SerpAPI, OpenAI/Gemini, ReportLab}{2026}{
+    \item Aggregates real-time business data (SerpAPI, Google Maps) and generates a strategic diagnosis: SWOT, 3-horizon action plan with KPIs, and a PDF report streamed via SSE.
+    \item LLM router with GPT-4 as primary and Gemini as fallback, handling quota errors automatically.
+}
+
+
+\cvproject{LocalGuide}{HTML/CSS/JS, Supabase, PostgreSQL + PostGIS}{2026}{
+    \item Connects travelers with verified merchants and certified guides, solving local discovery through geolocation (PostGIS) and full-text search.
+    \item Supabase auth, row-level security and real-time updates - no build tools, instant deployment.
+}
+
+
+\cvproject{Weather App}{HTML/CSS/JS, OpenWeatherMap API}{2026}{
+    \item Responsive app showing live temperature, humidity and wind speed for any city via the OpenWeatherMap API.
+    \item Animated UI with pure CSS and vanilla JavaScript - no frameworks or build tools.
+}
+
+
+%----------------------------------------------------------------------------------------
+%   CLUBS & ACTIVITIES
+%----------------------------------------------------------------------------------------
+\section{Clubs \& Activities}
+
+
+\cvline{STEG - Soci\'{e}t\'{e} Tunisienne d'Electricit\'{e} et du Gaz}{\textcolor{medgray}{- Internship}}{2026}
+
+
+\cventry{Microsoft Tech Club - ISIMM}{Event Department Member}{2025 - Present}{
+    \item Helped plan and run tech events and workshops, from logistics to execution.
+}
+
+
+\cventry{Tunivisions LPK}{Event Department Member}{2021 - 2023}{
+    \item Handled setup, registration desks, attendee guidance and local sponsor outreach.
+}
+
+
+%----------------------------------------------------------------------------------------
+%   LANGUAGES
+%----------------------------------------------------------------------------------------
+\section{Languages}
+
+
+\noindent
+\begin{tabularx}{\linewidth}{@{}Y Y Y@{}}
+    \textbf{Arabic} - Native &
+    \textbf{French} - Intermediate (B2) &
+    \textbf{English} - Intermediate (B2)
+\end{tabularx}
+
+
+%----------------------------------------------------------------------------------------
+%   CERTIFICATIONS
+%----------------------------------------------------------------------------------------
+\section{Certifications}
+
+
+\cvline{GitHub Foundations}{\textcolor{medgray}{- DataCamp}}{2026}
+\cvline{Participation - Conference Nationale ``WIN''}{\textcolor{medgray}{- Tunivisions LPK}}{2022}
+\cvline{Graphic Design Training Session}{\textcolor{medgray}{- Tunivisions LPK}}{2021}
+
+
+%----------------------------------------------------------------------------------------
+%   INTERESTS
+%----------------------------------------------------------------------------------------
+\section{Interests}
+
+
+\textcolor{medgray}{
+Web \& app development \,\textbullet\, AI/deep learning \,\textbullet\, Testing \,\textbullet\, Cybersecurity}
+
+\end{document}

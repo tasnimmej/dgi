@@ -1,16 +1,16 @@
-Projet DGI - Version améliorée
+Projet DGI 
 ================================
 
-But: Ce dépôt est une copie améliorée du projet original `projet_dgi_ia`. Il conserve tout le travail existant et servira de base pour implémenter les cycles suivants :
+But: Ce dÃ©pÃ´t servira de base pour implÃ©menter les cycles suivants :
 
-Cycles (itérations)
-1) Authentification et gestion des sociétés (FastAPI + JWT, tables users/companies, pages React login/signup)
-2) Frontend réactif (routes, dashboard, gestion factures / déclarations)
+Cycles (itÃ©rations)
+1) Authentification et gestion des sociÃ©tÃ©s (FastAPI + JWT, tables users/companies, pages React login/signup)
+2) Frontend rÃ©actif (routes, dashboard, gestion factures / dÃ©clarations)
 3) Templates de factures tunisiennes + OCR (pytesseract) pour extraction automatique
-4) Génération de la déclaration conforme à la Recette des Finances tunisienne et export PDF
-5) Scheduler (APScheduler) + notifications (email/SMS) et vérification des échéances
+4) GÃ©nÃ©ration de la dÃ©claration conforme Ã  la Recette des Finances tunisienne et export PDF
+5) Scheduler (APScheduler) + notifications (email/SMS) et vÃ©rification des Ã©chÃ©ances
 6) Tests, migrations Alembic, documentation et packaging
 
-Emplacement des fichiers copiés : le contenu original est dans ce dossier. Les dépendances (venv, node_modules) ne sont pas copiées.
+Emplacement des fichiers copiÃ©s : le contenu original est dans ce dossier. Les dÃ©pendances (venv, node_modules) ne sont pas copiÃ©es.
 
-Prochaine étape : implémenter la première itération (auth) — confirmez pour démarrer.
+Prochaine Ã©tape : implÃ©menter la premiÃ¨re itÃ©ration (auth) â€” confirmez pour dÃ©marrer.
